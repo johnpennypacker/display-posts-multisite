@@ -13,6 +13,11 @@ Author URI:
 if ( !defined('ABSPATH') )
 	die('-1');
 
+// to make taxonomy queries work, the taxonomy on the remote site must also be registered
+// on this site.  This setting screen lets admins enter taxonomies to query.
+if( is_admin() ) {
+	include_once( plugin_dir_path( __FILE__ ) . 'settings.php' );
+}
 
 /**
  * The wrapper class. Handy for storing values like attributes and swiched.
@@ -31,6 +36,7 @@ class DPSMultisite {
 
 		add_shortcode( 'display-posts-multisite', array( $this, 'dpsmulti_shortcode' ) );
 		add_filter( 'the_permalink', array( $this, 'autofix_permalink' ), 99 );
+		add_action( 'init', array( $this, 'register_taxonomies' ) );
 		
 	}
 
@@ -91,6 +97,28 @@ class DPSMultisite {
 		}
 		return FALSE;
 	}
+	
+	function register_taxonomies() {
+		$option = get_option( 'dpsmulti_taxonomies' );	
+		if( FALSE === $option ) {
+			return;
+		}
+		$option = str_replace( ',', "\n", $option );
+		$slugs = explode( "\n", $option );
+		foreach( $slugs as $t ) {
+			$t = trim( $t );
+			if( ! taxonomy_exists( $t ) ) {
+				register_taxonomy( $t, null, array(
+					'public'                => false,
+					'show_ui'               => true,  // equal to the argument public
+					'show_in_rest'          => false, // add to REST API
+					'hierarchical'          => false,
+					'update_count_callback' => '__return_null',
+				));
+			}
+		}
+	}
+	
 }
 
 new DPSMultisite();
