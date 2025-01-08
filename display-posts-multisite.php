@@ -4,7 +4,7 @@ Plugin Name: Display Posts Multisite
 Requires Plugins: display-posts-shortcode
 Plugin URI: 
 Description: Adds a blog_id parameter to display posts from other sites on the network.
-Version: 0.2
+Version: 0.3
 Author: John Pennypacker <john@pennypacker.net>
 Author URI: 
 */
