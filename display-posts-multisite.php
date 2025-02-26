@@ -88,7 +88,14 @@ class DPSMultisite {
 	 * @return str
 	 */
 	function get_post_permalink( $post ) {
+		if ( ! is_object( $post ) || ! isset( $post->post_type ) ) {
+			return FALSE;
+		}
 		$rw = get_option( 'rewrite_rules' );
+		if( FALSE === $rw ) {
+			return FALSE;
+		}
+		
 		$k = array_search( 'index.php?post_type=' . $post->post_type, $rw );
 		if( $k ) {
 			$path = str_replace( '?$', '', $k ) . $post->post_name . '/';
