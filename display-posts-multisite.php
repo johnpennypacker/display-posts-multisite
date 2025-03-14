@@ -92,17 +92,20 @@ class DPSMultisite {
 			return FALSE;
 		}
 		$rw = get_option( 'rewrite_rules' );
+		
 		if( FALSE === $rw ) {
 			return FALSE;
 		}
 		
+		$output = FALSE;
+
 		$k = array_search( 'index.php?post_type=' . $post->post_type, $rw );
 		if( $k ) {
 			$path = str_replace( '?$', '', $k ) . $post->post_name . '/';
-			$l = get_site_url() . '/' . $path;
-			return $l;
+			$output = get_site_url() . '/' . $path;
 		}
-		return FALSE;
+		$output = apply_filters( 'dpsmulti_shortcode_permalink', $output, $post, $rw );	
+		return $output;
 	}
 	
 	function register_taxonomies() {
