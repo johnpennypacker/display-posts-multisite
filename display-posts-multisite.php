@@ -25,19 +25,25 @@ if( is_admin() ) {
 class DPSMultisite {
 
 	/**
+	 * Declare properties.
+	 * As of php 8.2, you get warnings if you don't.
+	 */
+	public $path;
+	public $url;
+	public $switched = FALSE;
+	public $atts = array();
+
+	/**
 	 * Constructor method.
 	 * Sets up instance variables, adds new shortcode, filters permalinks for formatting.
 	 */
 	function __construct() {
 		$this->path = plugin_dir_path( __FILE__ );
 		$this->url = plugin_dir_url( __FILE__ );
-		$this->switched = FALSE;
-		$this->atts = array();
 
 		add_shortcode( 'display-posts-multisite', array( $this, 'dpsmulti_shortcode' ) );
 		add_filter( 'the_permalink', array( $this, 'autofix_permalink' ), 99 );
 		add_action( 'init', array( $this, 'register_taxonomies' ) );
-		
 	}
 
 	/**
